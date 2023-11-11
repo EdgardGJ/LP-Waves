@@ -1,0 +1,20 @@
+.boton-particulas {
+    background-color: transparent;
+    color: green;
+    min-height: 45px;
+    min-width: 60px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-style: italic;
+    font-size: 20px;
+
+}
+.boton-container {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: black;
+
+}

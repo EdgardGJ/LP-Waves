@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import './App.css';
-import FractalCanvas from './componentes/Fractalcanvas';
+import Memory from './componentes/Memory';
+
 
 function App() {
   return (
     <div className="App">
-      <FractalCanvas />
+      <Memory />
     </div>
   );
 }

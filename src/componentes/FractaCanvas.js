@@ -1,10 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import p5 from 'p5';
-import mathjs from 'mathjs';
+import '../hojas de estilo/FractalCanvas.css';
+function ParticleCanvas ({ interactionType, trackingMode, interactionLogic })  {
 
-const ParticleCanvas = () =>  {
+  const [particles, setParticles] = useState([]);
+
+  const updateParticles = (newParticles) => {
+    setParticles(newParticles);
+    
+  }
+
  useEffect (() => {
-  const s = (p) => {
+  const sketch = (p) => {
     let particles = [];
     const maxParticles = 500;
     let cursor;
@@ -12,7 +19,17 @@ const ParticleCanvas = () =>  {
     let nextColorChange = 0;
 
     p.setup = () => {
-      p.createCanvas(window.innerWidth, window.innerHeight);
+      // Encuentra el contenedor del canvas
+      const canvasContainer = document.getElementById('particle-container')
+
+      // Elimina cualquier canvas existente dentro del contenedor
+      const existingCanvas = canvasContainer.querySelector('canvas');
+      if (existingCanvas) {
+        existingCanvas.remove();
+      }
+      // Crea el canvas que se le ha indicado sin duplicarse
+      p.createCanvas(window.innerWidth, window.innerHeight).id('fractal-canvas');
+      
       p.noStroke();
 
       cursor = p.createVector(p.width / 2, p.height / 2);
@@ -42,6 +59,8 @@ const ParticleCanvas = () =>  {
         particle.update(currentColor);
         particle.display();
       });
+
+      interactionLogic(p, particles);
     };
 
     class Particle {
@@ -52,7 +71,6 @@ const ParticleCanvas = () =>  {
         this.delay = delay;
         this.color = currentColor; // Mismo color paratodas las particulas
         this.maxSpeed = 7;
-
       }
 
 
@@ -62,9 +80,11 @@ const ParticleCanvas = () =>  {
         }
 
         // Calcula la atraccion hacia el cursor
+        if (trackingMode) { // Activa el modo seguimiento
         const direction = p5.Vector.sub(cursor, this.position);
         direction.setMag(0.1);
         this.velocity.add(direction);
+        }
 
         // Aplica limites a la velocidad
         this.velocity.limit(this.maxSpeed);
@@ -72,7 +92,7 @@ const ParticleCanvas = () =>  {
         // Actualiza la posicion
         this.position.add(this.velocity);
 
-        // Rebota en los border
+        // Rebota en los bordes
         if (this.position.x < 0 || this.position.x > p.width) {
           this.velocity.y *= -1;
         }
@@ -89,10 +109,17 @@ const ParticleCanvas = () =>  {
     }
   }
 
-  new p5(s);
- }, []);
+  // Permite crear el canvas dentro del contenedor que se le esta indicando
+  const canvasContainer = document.getElementById('particle-container')
 
-  return <div id='particle-conteiner' />
-};
+  new p5(sketch, canvasContainer);
+
+  return () => {
+
+  };
+ }, [interactionType, trackingMode, interactionLogic]);
+
+  return <div id='particle-container' />
+}; 
 
 export default ParticleCanvas;
