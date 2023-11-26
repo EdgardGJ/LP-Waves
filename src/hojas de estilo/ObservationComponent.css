@@ -1,0 +1,44 @@
+.formulary-container {
+    display: absolute;
+    flex-direction: column;
+    top: 50px;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    padding: 10px;
+    min-height: 200px;
+    width: 200px;
+    border: 1px solid white;
+    cursor: grab;
+    font-size: 15px;
+
+}
+.formulary-container:active {
+    cursor: grabbing;
+}
+.formulary-title {
+    font-family: 'sciallo', sans-serif;
+    font-size: 20px;
+}
+input {
+    padding: 10px;
+    background-color: black;
+    color: rgb(179, 179, 179);
+    border: none;
+    border-bottom: 1px solid gray;
+    font-family: 'Brave New Era G98', sans-serif;
+}
+.buton-start {
+    padding: 5px;
+    margin: 5px;
+    background-color: transparent;
+    color: white;
+    font-size: 15px;
+    min-height: 30px;
+    min-width: 60px;
+    cursor: pointer;
+    border: 1px solid darkgray;
+    font-family: 'Brave New Era G98', sans-serif;
+}

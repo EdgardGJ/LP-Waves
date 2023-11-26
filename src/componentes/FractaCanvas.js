@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import p5 from 'p5';
 import '../hojas de estilo/FractalCanvas.css';
+
+
 function ParticleCanvas ({ interactionType, trackingMode, interactionLogic })  {
 
   const [particles, setParticles] = useState([]);
@@ -41,6 +43,7 @@ function ParticleCanvas ({ interactionType, trackingMode, interactionLogic })  {
     };
 
     p.draw = () => {
+
       p.background(0);
 
       // Cambia el color con un cierto retraso
@@ -49,9 +52,7 @@ function ParticleCanvas ({ interactionType, trackingMode, interactionLogic })  {
         nextColorChange = p.millis() + 2000;
       }
 
-      // Actualiza la posicion del cursor al centro de la pantalla
-      cursor.x = p.mouseX || p.width / 2;
-      cursor.y = p.mouseY || p.height / 2;
+     
 
 
       // Dibuja y actualiza las particulas
@@ -80,11 +81,11 @@ function ParticleCanvas ({ interactionType, trackingMode, interactionLogic })  {
         }
 
         // Calcula la atraccion hacia el cursor
-        if (trackingMode) { // Activa el modo seguimiento
+        
         const direction = p5.Vector.sub(cursor, this.position);
         direction.setMag(0.1);
         this.velocity.add(direction);
-        }
+        
 
         // Aplica limites a la velocidad
         this.velocity.limit(this.maxSpeed);

@@ -7,14 +7,23 @@ import ObservationComponent from './ObservationComponent';
 
 
 function Memory() {
-  const [interactionType, setInteractionType] = useState('seguimiento');
+  const [interactionType, setInteractionType] = useState('default');
   const [particles, setParticles] = useState([]); // Define particles state
   const [particleState, setParticleState] = useState([]);
+  let currentColor;
   let p;
   let centerX;
   let centerY;
+  let trackingMode = false;
+
+
+  
 
   const handleInteraction = (interactionType, interactionLogic) => {
+    if (interactionType === 'Modo Exhibicion') {
+      interactionType = 'seguimiento';
+    }
+
       setInteractionType(interactionType);
 
       setParticleState(
@@ -26,19 +35,79 @@ function Memory() {
       })))
     };
 
+    
+
+  const handleObservationModeChange = (selectedMode) => {
+    if (selectedMode !== interactionType) {
+      setInteractionType(selectedMode);
+    }
+  }
    
-  const hanldeStartSimulation = (formData) => {
-    hanldeStartSimulation(formData);
+
+  const handleMenuSelection = (selectedOption) => {
+    switch (selectedOption) {
+      case 'Modo Exhibicion':
+        interactionLogic();
+      break;
+      case 'Observacion de Datos':
+        setInteractionType('observacion')
+        break;
+    }
+    
   }
 
   const interactionLogic = (p, particles) => {
+    
     switch (interactionType) {
       // Modalidades de exhibicion
       case 'seguimiento':
+        let cursor;
+        const colorPalette = ['#F8BD400', '#FA7268', '#7D4E57', '#379392', '#4FB0C6']
+        
         // Logica de seguimiento utilixando el trackingmode
         // Dibuja y actualiza las particulas
-        particles.forEach((particle, index) => {
+
+        cursor = p.createVector(p.width / 2, p.height / 2);
+
+        particles.forEach((particle) => {
           
+          
+          const direction = p5.Vector.sub(cursor, particle.position);
+          direction.setMag(0.1);
+          particle.velocity.add(direction);
+            
+    
+          // Aplica limites a la velocidad
+          const maxSpeed = 7;
+          particle.velocity.limit(maxSpeed);
+    
+          // Actualiza la posicion
+          particle.position.add(particle.velocity);
+    
+          // Rebota en los bordes
+          if (particle.position.x < 0 || particle.position.x > p.width) {
+            particle.velocity.y *= -1;
+          }
+          if (particle.position.y < 0 || particle.position.y > p.height) {
+            particle.velocity.y *= -1;
+          }
+
+          if (p.millis() > particle.delay && p.millis() > particle.nextColorChange) {
+            const currentColor = p.color(p.red(particle.color), p.green(particle.color), p.blue(particle.color), 150); // Aplica el color actual
+            const nextColor = p.color(colorPalette[(colorPalette.indexOf(currentColor.toString()) + 1) % colorPalette.length])
+
+            particle.color = p.lerpColor(currentColor, nextColor, 0.05);
+
+            particle.nextColorChange = p.millis() + 200;
+          }
+          p.fill(particle.color);
+          p.ellipse(particle.position.x, particle.position.y, particle.size, particle.size);
+          
+           // Actualiza la posicion del cursor al centro de la pantalla
+      cursor.x = p.mouseX || p.width / 2;
+      cursor.y = p.mouseY || p.height / 2
+      trackingMode = true;
+    
         });
        break;
 
@@ -145,13 +214,27 @@ function Memory() {
         }
       })
       break;
-
+      
       // Agregar mas casos
       default:
-      // Dibuja y actualiza las particulas
-      particles.forEach((particle) => {
+        const colorPalette2 = ['#F8BD400', '#FA7268', '#7D4E57', '#379392', '#4FB0C6']
         
-      });
+        
+        // Dibuja y actualiza las particulas
+        particles.forEach((particle) => {
+          if (p.millis() > particle.delay && p.millis() > particle.nextColorChange) {
+            const currentColor = p.color(p.red(particle.color), p.green(particle.color), p.blue(particle.color), 150); // Aplica el color actual
+            const nextColor = p.color(colorPalette[(colorPalette.indexOf(currentColor.toString()) + 1) % colorPalette.length])
+
+            particle.color = p.lerpColor(currentColor, nextColor, 0.05);
+
+            particle.nextColorChange = p.millis() + 200;
+        
+            particle.update(currentColor);
+            particle.display();
+    }
+  });
+  
           
     }
   };
@@ -160,7 +243,16 @@ function Memory() {
     <div>
       <UserInteraction 
       handleInteraction={handleInteraction} 
+      handleObservationModeChange={handleObservationModeChange}
       />
+      <ObservationComponent
+      particles={particles}
+      updateParticles={setParticles}
+      selectedMode={interactionType}
+      interactionLogic={interactionLogic}
+      handleObservationModeChange={handleObservationModeChange}
+      />
+      
       <ParticleCanvas 
       interactionType={interactionType} 
       particles={particles} 
