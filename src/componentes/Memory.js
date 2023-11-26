@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import ParticleCanvas from './FractaCanvas';
 import UserInteraction from './UserInteraction';
 import p5 from 'p5';
-import mathjs, { cos, rotate, sin } from 'mathjs';
+import mathjs, { cos, formatDependencies, rotate, sin } from 'mathjs';
+import ObservationComponent from './ObservationComponent';
 
 
 function Memory() {
@@ -21,11 +22,14 @@ function Memory() {
         position: particle.position.copy(),
         velocity: particle.velocity.copy(),
         inVorticeMode: particle.inVorticeMode,
-        target: { x: 0, y: 0},
+        target: { x: 0, y: 0 },
       })))
     };
 
    
+  const hanldeStartSimulation = (formData) => {
+    hanldeStartSimulation(formData);
+  }
 
   const interactionLogic = (p, particles) => {
     switch (interactionType) {
